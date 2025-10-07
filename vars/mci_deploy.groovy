@@ -1,6 +1,14 @@
 /**
- * This workflow is used to deploy DataStage assets to a DataStage server. It is designed to be called
- * from other workflows, such as the main 'JenkinsFile_*' perovided with this library.
+ * ███╗   ███╗███████╗████████╗████████╗██╗     ███████╗ ██████╗██╗
+ * ████╗ ████║██╔════╝╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║
+ * ██╔████╔██║█████╗     ██║      ██║   ██║     █████╗  ██║     ██║
+ * ██║╚██╔╝██║██╔══╝     ██║      ██║   ██║     ██╔══╝  ██║     ██║
+ * ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
+ * ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
+ * MettleCI DevOps for DataStage       (C) 2021-2025 Data Migrators
+ *
+ * This workflow is used to deploy DataStage assets to a DataStage server.  It is designed to be called
+ * from other workflows, such as the example workflows named 'JenkinsFile-*'.
  * The workflow uses the MettleCI CLI to perform the deployment and configuration of DataStage assets and
  * accepts several inputs, including the DataStage project name, environment name, and other parameters.
  * This workflow also includes steps to fetch and merge DSParams files, configure properties, and execute
@@ -229,7 +237,7 @@ def call(
             """
     }
 
-    // Publish JUnit XML compilation test output files to Jenkins
+    // Publish JUnit XML compilation test output files to Jenkins (if enabled by the relevant parameter)
     if ((PUBLISHCOMPILATIONRESULTS.toBoolean()) == true && findFiles(glob: "log/**/mettleci_compilation.xml").length > 0) {
         junit testResults: 'log/**/mettleci_compilation.xml',
             allowEmptyResults: true,
