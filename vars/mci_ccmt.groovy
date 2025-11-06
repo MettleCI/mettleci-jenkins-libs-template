@@ -19,7 +19,7 @@ def call(
 ) {
     def variantParams = "${((UPGRADEORACLEVARIANT.toBoolean()) == true)?" -param \" -T \" -param \" -V OracleConnector=${UPGRADEDORACLEVERSION},OracleConnectorPX=${UPGRADEDORACLEVERSION} \"":""}"
 
-    // See https://datamigrators.atlassian.net/wiki/spaces/MCIDOC/pages/410681364/DataStage+Connector+Migration+Command
+    // See https://docs.mettleci.io/?q=datastage-connector-migration-command
     bat label: "Run CCMT - Upgrade Stages", 
         script: """
             %AGENTMETTLECMD% datastage ccmt ^

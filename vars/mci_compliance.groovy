@@ -9,7 +9,7 @@
  *
  * This workflow is a template for running compliance tests in a DataStage environment using the MettleCI CLI.
  * It is designed to be called from other workflows and requires specific inputs to function correctly.
- * See https://datamigrators.atlassian.net/wiki/spaces/MCIDOC/pages/2262990849/Compliance+Namespace
+ * See https://docs.mettleci.io/?q=compliance-namespace
  */
 
 def call(
@@ -24,25 +24,29 @@ def call(
     def includeTagOption = "${((INCLUDETAGS.length()) > 0)?" -include-tags ${INCLUDETAGS}":""}"
     def excludeTagOption = "-exclude-tags example${((EXCLUDETAGS.length()) > 0)?",${EXCLUDETAGS}":""}"
 
-    // Perform a 'git checkout' of a remote repository which is NOT the repository from which this pipeline code was sourced
+    // Perform a 'git checkout' of a remote repository which is NOT the repository from
+    // which this pipeline code was sourced.
     checkout(
-        changelog: false, 
+        changelog: false,
         poll: false,
         scm: [  
             $class: 'GitSCM', 
-            branches: [[name: "${COMPLIANCE_REPO_BRANCH}"]], 
+            branches: [[name: "${COMPLIANCE_REPO_BRANCH}"]],
             doGenerateSubmoduleConfigurations: false, 
-            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'compliance']], 
+            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'compliance']],
             submoduleCfg: [], 
             userRemoteConfigs: [[ credentialsId: "${COMPLIANCE_REPO_CREDENTIALS}", url:  "${COMPLIANCE_REPO_URL}" ]]
         ])
 
     /**
-     * Executes the 'mettleci compliance test' command to test your repository's DataStage jobs against your Compliance rules.
-     * Note that 'mettleci compliance test' is mnot the same as 'mettleci compliance query' - See the documentation for more details.
+     * Executes the 'mettleci compliance test' command to test your repository's DataStage
+     * jobs against your Compliance rules.
+     * Note that 'mettleci compliance test' is not the same as 'mettleci compliance query'.
+     * See the documentation for more details.
+     * https://docs.mettleci.io/compliance-namespace
      */
     try {
-        // See https://datamigrators.atlassian.net/wiki/spaces/MCIDOC/pages/408322069/Compliance+Test+Command
+        // See https://docs.mettleci.io/compliance-test-command
         bat label: "Compliance Test - ${TESTSUITENAME}",
             script: """
                 %AGENTMETTLECMD% compliance test ^
@@ -58,7 +62,7 @@ def call(
     } finally {
         // Publish JUnit XML compilation test output files to Jenkins (if enabled by the relevant parameter)
         if (findFiles(glob: "compliance_report_${TESTSUITENAME}.xml").length > 0) {
-            junit testResults: "compliance_report_${TESTSUITENAME}.xml", 
+            junit testResults: "compliance_report_${TESTSUITENAME}.xml",
                 allowEmptyResults: true,
                 skipMarkingBuildUnstable: (CONTINUEONFAIL as boolean),
                 skipPublishingChecks: true
